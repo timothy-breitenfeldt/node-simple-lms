@@ -1,71 +1,94 @@
-var db = require("./db");
+const db = require("./db");
 
-exports.getAllAuthors = function(cb) {
-  db.query("select * from author", function(err, result) {
-    cb(err, result);
-  });
-};
-
-exports.addAuthor = function(author, cb) {
-  db.beginTransaction(function(err) {
-    if (err) cb(err, null);
-
-    db.query("insert into author (name) values(?)", [author.name], function(
-      err,
-      result
-    ) {
-      if (err) {
-        db.rollback(function(err) {
-          cb(err, null);
-        });
-      }
-
-      db.commit(function(err, result) {
-        cb(err, result);
-      });
+exports.getAllAuthors = function() {
+  return new Promise(function(resolve, reject) {
+    db.query("select * from author", function(err, result) {
+      return err ? reject(err) : resolve(result);
     });
   });
 };
 
-exports.removeAuthor = function(authorId, cb) {
-  db.beginTransaction(function(err) {
-    if (err) cb(err, null);
-
-    db.query("delete from author where authorId = ?;", [authorId], function(
-      err,
-      result
-    ) {
-      if (err) {
-        db.rollback(function(err) {
-          cb(err, null);
-        });
-      }
-
-      db.commit(function(err, result) {
-        cb(err, result);
-      });
-    });
-  });
-};
-
-exports.updateAuthor = function(author, cb) {
-  db.beginTransaction(function(err) {
-    if (err) cb(err, null);
-
+exports.getAuthorByName = function(authorName) {
+  return new Promise(function(resolve, reject) {
     db.query(
-      "update author set name=? where authorId = ?;",
-      [author.name, author.authorId],
+      "select authorId from author where name = ?;",
+      [authorName],
       function(err, result) {
+        return err ? reject(err) : resolve(result);
+      }
+    );
+  });
+};
+
+exports.addAuthor = function(author) {
+  return new Promise(function(resolve, reject) {
+    db.beginTransaction(function(err) {
+      if (err) return reject(err);
+
+      db.query("insert into author (name) values(?)", [author.name], function(
+        err,
+        result
+      ) {
         if (err) {
           db.rollback(function(err) {
-            cb(err, null);
+            return reject(err);
           });
+          return reject(err);
         }
 
         db.commit(function(err, result) {
-          cb(err, result);
+          return err ? reject(err) : resolve(result);
         });
-      }
-    );
+      });
+    });
+  });
+};
+
+exports.removeAuthor = function(authorId) {
+  return new Promise(function(resolve, reject) {
+    db.beginTransaction(function(err) {
+      if (err) return reject(err);
+
+      db.query("delete from author where authorId = ?;", [authorId], function(
+        err,
+        result
+      ) {
+        if (err) {
+          db.rollback(function(err) {
+            return reject(err);
+          });
+          return reject(err);
+        }
+
+        db.commit(function(err, result) {
+          return err ? reject(err) : resolve(result);
+        });
+      });
+    });
+  });
+};
+
+exports.updateAuthor = function(author) {
+  return new Promise(function(resolve, reject) {
+    db.beginTransaction(function(err) {
+      if (err) return reject(err);
+
+      db.query(
+        "update author set name=? where authorId = ?;",
+        [author.name, author.authorId],
+        function(err, result) {
+          if (err) {
+            db.rollback(function(err) {
+              return reject(err);
+            });
+            return reject(err);
+          }
+
+          db.commit(function(err, result) {
+            return err ? reject(err) : resolve(result);
+          });
+        }
+      );
+    });
   });
 };

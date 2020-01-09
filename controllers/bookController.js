@@ -1,47 +1,62 @@
-var routes = require("express").Router();
-var db = require("../dao/db");
-var bookDao = require("../dao/bookDao");
+const routes = require("express").Router();
+const db = require("../dao/db");
+const bookDao = require("../dao/bookDao");
+const dbUtil = require("../dao/dbUtil");
 
-routes.get("/book", function(req, res) {
-  bookDao.getAllBooks(function(error, result) {
-    if (error) throw error;
-    res.setHeader("Content-Type", "application/json");
-    res.send(result);
-  });
+routes.get("/books", function(req, res) {
+  bookDao
+    .getAllBooks()
+    .then(function(result) {
+      res.setHeader("Content-Type", "application/json");
+      res.send(result);
+    })
+    .catch(function(err) {
+      throw err;
+    });
 });
 
-routes.post("/book", function(req, res) {
-  var book = req.body;
-  bookDao.addBook(book, function(err, result) {
-    if (err) {
+routes.post("/books", function(req, res) {
+  const book = req.body;
+  bookDao
+    .addBook(book)
+    .then(function(result) {
+      res.status(201);
+      res.setHeader("Content-Type", "application/json");
+      dbUtil.getLastInsertedId().then(function(id) {
+        res.send({ bookId: id[0]["LAST_INSERT_ID()"] });
+      });
+    })
+    .catch(function(err) {
       res.status(400);
       res.send("Add Book Failed!");
-    }
-    res.status(201);
-    res.send("Add Book Successful!");
-  });
+    });
 });
 
-routes.delete("/book/:id", function(req, res) {
-  bookDao.removeBook(req.params.id, function(err, result) {
-    if (err) {
+routes.delete("/books/:id", function(req, res) {
+  bookDao
+    .removeBook(req.params.id)
+    .then(function(result) {
+      res.status(200);
+      res.send("Delete Book Successful!");
+    })
+    .catch(function(err) {
       res.status(400);
       res.send("Delete Book Failed!");
-    }
-    res.send("Delete Book Successful!");
-  });
+    });
 });
 
-routes.put("/book", function(req, res) {
-  var book = req.body;
-  bookDao.updateBook(book, function(err, result) {
-    if (err) {
+routes.put("/books", function(req, res) {
+  const book = req.body;
+  bookDao
+    .updateBook(book)
+    .then(function(result) {
+      res.status(200);
+      res.send("Update Book Successful!");
+    })
+    .catch(function(err) {
       res.status(400);
       res.send("Update Book Failed!");
-    }
-    res.status(200);
-    res.send("Update Book Successful!");
-  });
+    });
 });
 
 module.exports = routes;
