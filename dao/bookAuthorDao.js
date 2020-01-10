@@ -1,6 +1,19 @@
 const bookDao = require("./bookDao");
 const authorDao = require("./authorDao");
 const dbUtil = require("./dbUtil");
+const db = require("./db");
+
+exports.getAllBooksAndAuthors = function() {
+  return new Promise(function(resolve, reject) {
+    db.query(
+      "select bookId, title, authorId, name as author from book natural join author;",
+      function(err, result) {
+        console.log(JSON.stringify(result));
+        return err ? reject(err) : resolve(result);
+      }
+    );
+  });
+};
 
 exports.addBookAndAuthor = function(bookAuthor) {
   return new Promise(function(resolve, reject) {

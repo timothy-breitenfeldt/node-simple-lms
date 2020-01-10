@@ -8,10 +8,13 @@ routes.get("/books", function(req, res) {
     .getAllBooks()
     .then(function(result) {
       res.setHeader("Content-Type", "application/json");
+      res.status = 200;
       res.send(result);
     })
     .catch(function(err) {
-      throw err;
+      console.log(err);
+      res.status = 404;
+      res.send(err);
     });
 });
 
@@ -27,6 +30,7 @@ routes.post("/books", function(req, res) {
       });
     })
     .catch(function(err) {
+      console.log(err);
       res.status(400);
       res.send("Add Book Failed!");
     });
@@ -40,6 +44,7 @@ routes.delete("/books/:id", function(req, res) {
       res.send("Delete Book Successful!");
     })
     .catch(function(err) {
+      console.log(err);
       res.status(400);
       res.send("Delete Book Failed!");
     });
@@ -54,6 +59,7 @@ routes.put("/books", function(req, res) {
       res.send("Update Book Successful!");
     })
     .catch(function(err) {
+      console.log(err);
       res.status(400);
       res.send("Update Book Failed!");
     });

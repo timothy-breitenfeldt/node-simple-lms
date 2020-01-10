@@ -11,7 +11,9 @@ routes.get("/authors", function(req, res) {
       res.send(result);
     })
     .catch(function(err) {
-      throw err;
+      console.log(err);
+      res.status = 400;
+      res.send("Unable to get authors.");
     });
 });
 
@@ -27,6 +29,7 @@ routes.post("/authors", function(req, res) {
       });
     })
     .catch(function(err) {
+      console.log(err);
       res.status(400);
       res.send("Add author failed!");
     });
@@ -40,6 +43,7 @@ routes.delete("/authors/:id", function(req, res) {
       res.send("Delete author successfull!");
     })
     .catch(function(err) {
+      console.log(err);
       res.status(400);
       res.send("Delete author failed!");
     });
@@ -54,6 +58,7 @@ routes.put("/authors", function(req, res) {
       res.send("Update Successfull!");
     })
     .catch(function(err) {
+      console.log(err);
       res.status(400);
       res.send("Update author failed!");
     });
