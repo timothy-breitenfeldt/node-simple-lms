@@ -11,7 +11,7 @@ exports.getAllAuthors = function() {
 exports.getAuthorByName = function(authorName) {
   return new Promise(function(resolve, reject) {
     db.query(
-      "select authorId from author where name = ?;",
+      "select authorId from author where name like ?;",
       [authorName],
       function(err, result) {
         return err ? reject(err) : resolve(result);

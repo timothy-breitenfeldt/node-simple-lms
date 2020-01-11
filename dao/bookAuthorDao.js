@@ -8,7 +8,6 @@ exports.getAllBooksAndAuthors = function() {
     db.query(
       "select bookId, title, authorId, name as author from book natural join author;",
       function(err, result) {
-        console.log(JSON.stringify(result));
         return err ? reject(err) : resolve(result);
       }
     );
@@ -102,5 +101,29 @@ exports.addBookAndAuthor = function(bookAuthor) {
         );
       }
     }));
+  });
+};
+
+exports.updateBookAndAuthor = function(bookAuthor) {
+  return new Promise(function(resolve, reject) {
+    db.beginTransaction(function(error) {
+      if (error) reject(error);
+
+      db.query(
+        "update author set name=? where authorId = ?;",
+        [bookAuthor.author, bookAuthor.authorId],
+        function(error, result) {
+          if (error) reject(error);
+
+          db.query(
+            "update book set title=? where bookId = ?",
+            [bookAuthor.title, bookAuthor.bookId],
+            function(error, result) {
+              return error ? reject(error) : resolve(result);
+            }
+          );
+        }
+      );
+    });
   });
 };
