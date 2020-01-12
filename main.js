@@ -1,10 +1,13 @@
-var bodyParser = require("body-parser");
-var express = require("express");
-var app = express();
+const bodyParser = require("body-parser");
+const express = require("express");
+const app = express();
+const cors = require("cors");
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(cors());
+/*
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -13,6 +16,7 @@ app.use(function(req, res, next) {
   );
   next();
 });
+*/
 
 // parse application/json
 app.use(bodyParser.json());
