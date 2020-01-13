@@ -8,12 +8,12 @@ routes.get("/books", function(req, res) {
     .getAllBooks()
     .then(function(result) {
       res.setHeader("Content-Type", "application/json");
-      res.status = 200;
+      res.status(200);
       res.send(result);
     })
     .catch(function(err) {
       console.log(err);
-      res.status = 404;
+      res.status(404);
       res.send(err);
     });
 });
@@ -40,12 +40,11 @@ routes.delete("/books/:id", function(req, res) {
   bookDao
     .removeBook(req.params.id)
     .then(function(result) {
-      res.status(200);
-      res.send("Delete Book Successful!");
+      res.status(204);
     })
     .catch(function(err) {
       console.log(err);
-      res.status(400);
+      res.status(404);
       res.send("Delete Book Failed!");
     });
 });
@@ -60,7 +59,7 @@ routes.put("/books", function(req, res) {
     })
     .catch(function(err) {
       console.log(err);
-      res.status(400);
+      res.status(404);
       res.send("Update Book Failed!");
     });
 });

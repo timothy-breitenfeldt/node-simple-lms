@@ -5,13 +5,13 @@ routes.get("/bookauthors", function(req, res) {
   bookAuthorDao
     .getAllBooksAndAuthors()
     .then(function(result) {
-      res.status(201);
+      res.status(200);
       res.setHeader("Content-Type", "application/json");
       res.send(result);
     })
     .catch(function(err) {
       console.log(err);
-      res.status(400);
+      res.status(404);
       res.send("Unable to get books and authors");
     });
 });
@@ -37,13 +37,13 @@ routes.put("/bookauthors", function(req, res) {
   bookAuthorDao
     .updateBookAndAuthor(bookAuthor)
     .then(function(result) {
-      res.status(200);
+      res.status(204);
       res.setHeader("Content-Type", "application/json");
       res.send(result);
     })
     .catch(function(err) {
       console.log(err);
-      res.status(400);
+      res.status(404);
       res.send("unable to put book and author.");
     });
 });

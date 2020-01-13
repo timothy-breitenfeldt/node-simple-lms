@@ -7,12 +7,13 @@ routes.get("/authors", function(req, res) {
   authorDao
     .getAllAuthors()
     .then(function(result) {
+      res.status(200);
       res.setHeader("Content-Type", "application/json");
       res.send(result);
     })
     .catch(function(err) {
       console.log(err);
-      res.status = 400;
+      res.status(404);
       res.send("Unable to get authors.");
     });
 });
@@ -39,12 +40,11 @@ routes.delete("/authors/:id", function(req, res) {
   authorDao
     .removeAuthor(req.params.id)
     .then(function(result) {
-      res.status(200);
-      res.send("Delete author successfull!");
+      res.status(204);
     })
     .catch(function(err) {
       console.log(err);
-      res.status(400);
+      res.status(404);
       res.send("Delete author failed!");
     });
 });
@@ -59,7 +59,7 @@ routes.put("/authors", function(req, res) {
     })
     .catch(function(err) {
       console.log(err);
-      res.status(400);
+      res.status(404);
       res.send("Update author failed!");
     });
 });
